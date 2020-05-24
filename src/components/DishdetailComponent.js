@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Label, Col, Card, CardImg, CardBody, CardText, Row, CardImgOverlay, CardTitle, BreadcrumbItem, Breadcrumb, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
+import { Loading } from './LoadingComponent';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -136,35 +137,51 @@ class CommentForm extends Component {
 }
 
 const DishDetail = (props) => {
-    if(props.selectedDish == null){
+    
+    if(props.isLoading){
         return(
-            <div className = 'row'></div>
+            <div className='container'>
+                <div className='row'>
+                    <Loading />
+                </div>
+            </div>
         );
     }
-    return(
-        <div className='container'>
-            <div className='row'>
-                <Breadcrumb>
-                    <BreadcrumbItem><Link to = '/menu'>Menu</Link></BreadcrumbItem>
-                    <BreadcrumbItem active>{props.selectedDish.name}</BreadcrumbItem>
-                </Breadcrumb>
-                <div className='col-12'>
-                    <h3>{props.selectedDish.name}</h3>
-                    <hr /> 
+    else if(props.errMess){
+        return(
+            <div className='container'>
+                <div className='row'>
+                    <h4>{props.errMess}</h4>
                 </div>
             </div>
-            <div className='row'>
-                <div className='col-12 col-md-5 m-1'>
-                    <RenderDish dish = {props.selectedDish} />
+        );
+    }
+    else if(props.selectedDish != null){
+        return(
+            <div className='container'>
+                <div className='row'>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to = '/menu'>Menu</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{props.selectedDish.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className='col-12'>
+                        <h3>{props.selectedDish.name}</h3>
+                        <hr /> 
+                    </div>
                 </div>
-                <div className='col-12 col-md-5 m-1'>
-                    <RenderComments comments = {props.comments} 
-                     addComment = {props.addComment}
-                     dishId = {props.selectedDish.id}   />
+                <div className='row'>
+                    <div className='col-12 col-md-5 m-1'>
+                        <RenderDish dish = {props.selectedDish} />
+                    </div>
+                    <div className='col-12 col-md-5 m-1'>
+                        <RenderComments comments = {props.comments} 
+                        addComment = {props.addComment}
+                        dishId = {props.selectedDish.id}   />
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
 };
 
 
