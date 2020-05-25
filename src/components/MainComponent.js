@@ -6,7 +6,7 @@ import DishDetail from './DishdetailComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import About from './AboutComponent';
-import { Switch, Router, Redirect, Route, withRouter } from 'react-router-dom';
+import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, postComment, fetchLeads, postFeedback } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
@@ -32,10 +32,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class Main extends Component {
-
-    constructor(props){
-        super(props);
-    };
 
   componentDidMount(){
     this.props.fetchDishes();
