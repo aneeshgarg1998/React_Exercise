@@ -134,7 +134,7 @@ export const fetchPromos = () => (dispatch) => {
 
 export const promosLoading = () => ({
     type: ActionTypes.PROMOS_LOADING
-})
+});
 
 export const promosFailed = (errmess) => ({
     type: ActionTypes.PROMOS_FAILED,
@@ -145,3 +145,80 @@ export const addPromos = (promos) => ({
     type: ActionTypes.ADD_PROMOS,
     payload: promos
 });
+
+export const fetchLeads = () => (dispatch) => {
+    dispatch(leadsLoading(true));
+
+    return fetch(baseUrl + 'leaders')
+        .then(response => {
+            if(response.ok){
+                return response;
+            }
+            else{
+                var error = new Error('Error ' + response.status + ": " +response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(leads => dispatch(addLeads(leads)))
+        .catch(error => dispatch(leadsFailed(error)));
+}
+
+export const leadsLoading = () => ({
+    type: ActionTypes.LEADS_LOADING
+});
+
+export const leadsFailed = (errmess) => ({
+    type: ActionTypes.LEADS_FAILED,
+    payload: errmess
+});
+
+export const addLeads = (leads) => ({
+    type: ActionTypes.ADD_LEADS,
+    payload: leads
+});
+
+export const postFeedback = (feedback) => (dispatch) => {
+    
+    const newFeedback = {
+        firstname: feedback.firstname,
+        lastname: feedback.lastname,
+        telnum: feedback.telnum,
+        email: feedback.email,
+        agree: feedback.agree,
+        contactType: feedback.contactType,
+        message: feedback.message,
+    };
+    newFeedback.date = new Date().toISOString();
+    
+    return fetch(baseUrl + 'feedback', {
+        method: "POST",
+        body: JSON.stringify(newFeedback),
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+
+    })
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => {
+        alert('Thank you for your feedback! \n ' + JSON.stringify(newFeedback));
+        response.json()})
+    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+};
